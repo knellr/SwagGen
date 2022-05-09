@@ -13,7 +13,12 @@ public struct Content {
     }
 
     public func getMediaItem(_ type: MediaType) -> MediaItem? {
-        return mediaItems[type.rawValue] ?? mediaItems.first { type.rawValue.contains($0.key.replacingOccurrences(of: "*", with: "")) }?.value
+        return mediaItems[type.rawValue] ?? mediaItems.first(where: {
+            var searchString = $0.key
+            searchString = searchString.replacingOccurrences(of: "*", with: "")
+            searchString = searchString.components(separatedBy: ";")[0]
+            return type.rawValue.contains(searchString)
+        })?.value
     }
 
     public var jsonSchema: Schema? {
